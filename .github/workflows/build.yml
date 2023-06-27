@@ -28,7 +28,7 @@ jobs:
           chmod +x .github/build.sh
           for D in *; do [ -d "$D" ] && .github/build.sh "$D"; done
       - name: Remove .github
-        run: rm -rf .github
+        run: rm -rf .github README.md
       - name: Zip
         run: |
           rm archives/README.md
