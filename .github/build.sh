@@ -5,7 +5,7 @@ set -x;
 cd $1;
 if [ -f "vector.svg" ]; then
   toIco(){
-    gm convert $1x$1.png $1x$1.ico
+    magick convert $1x$1.png $1x$1.ico
     if [ $? -ne "0" ]; then
       rm $1x$1.ico
     fi;
