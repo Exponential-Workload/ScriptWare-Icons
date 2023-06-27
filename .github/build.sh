@@ -15,9 +15,7 @@ if [ -f "vector.svg" ]; then
   }
   run() {
     toFormat $1 png;
-    toFormat $1 webp;
-    toFormat $1 gif;
-    toFormat $1 avif;
+    gm convert $1.png $1.webp;
     toIco $1;
   }
   
@@ -43,5 +41,4 @@ if [ -f "vector.svg" ]; then
   run 96
   run 72
 fi;
-../.github/convert.sh;
 cd ..;

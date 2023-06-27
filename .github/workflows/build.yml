@@ -20,6 +20,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Setup Inkscape
+        run: |
+          sudo apt install inkscape graphicsmagick -y
+      - name: Build
+        run: |
+          chmod +x .github/build.sh
+          for D in *; do [ -d "$D" ] && .github/build.sh "$D"; done
       - name: Remove .github
         run: rm -rf .github
       - name: Zip
