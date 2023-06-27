@@ -1,0 +1,43 @@
+name: Deploy content to Pages
+
+on:
+  push:
+    branches: ["master"]
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Remove .github
+        run: rm -rf .github
+      - name: Zip
+        run: |
+          rm archives/README.md
+          sudo apt install zip -y
+          zip -r archives/all.zip .
+          for D in *; do [ -d "$D" ] && zip -r archives/$D.zip "$D"; done
+          rm archives/archives.zip
+      - name: Create Indexes
+        uses: Exponential-Workload/create-index-action@0.1.1
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v1
+        with:
+          # Upload entire repository
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2
