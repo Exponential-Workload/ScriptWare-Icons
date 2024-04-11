@@ -10,15 +10,19 @@ fi
 input="$1"
 tmpfile="/tmp/$(date).$(basename "$input")"
 
-echo "export default {
-  plugins: [
-    'preset-default',
-    'prefixIds',
-    'removeViewBox',
-  ],
-};" > /tmp/svgo.config.mjs
-svgo --config /tmp/svgo.config.mjs -o "$tmpfile" -i "$input" > /dev/null;
-rm /tmp/svgo.config.mjs
+if which svgo > /dev/null 2>&1; then
+  echo "export default {
+    plugins: [
+      'preset-default',
+      'prefixIds',
+      'removeViewBox',
+    ],
+  };" > /tmp/svgo.config.mjs
+  svgo --config /tmp/svgo.config.mjs -o "$tmpfile" -i "$input" > /dev/null;
+  rm /tmp/svgo.config.mjs
+else
+  cp "$input" "$tmpfile";
+fi
 
 if [ ! -s "$tmpfile" ]; then
   echo "Fatal: no SVG file" >&2
