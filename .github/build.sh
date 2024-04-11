@@ -32,8 +32,10 @@ if [ -f "vector.svg" ]; then
     size="${width}x${height}"
     toFormat $1 png;
     gm convert $size.png $size.webp;
-    # if the width & height are both under or equal to 256
+    gm convert $size.png $size.tiff;
+    # if the width & height are both under or equal to 256, make icos and bmps
     if (( $(echo "$height <= 256" | bc) && $(echo "$width <= 256" | bc) )); then
+      gm convert $size.png $size.bmp;
       toIco $1;
     fi;
   }

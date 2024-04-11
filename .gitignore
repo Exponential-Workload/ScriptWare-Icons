@@ -1,5 +1,7 @@
 *.png
 *.webp
 *.ico
+*.tiff
+*.bmp
 IMAGE_METADATA
 !favicon.ico
