@@ -27,6 +27,7 @@ jobs:
         run: |
           chmod +x .github/build.sh
           for D in *; do [ -d "$D" ] && .github/build.sh "$D"; done
+          for D in wide/*; do [ -d "$D" ] && .github/build.sh "$D"; done
       - name: Remove .github
         run: rm -rf .github README.md
       - name: Zip
@@ -35,6 +36,7 @@ jobs:
           sudo apt install zip -y
           zip -r archives/all.zip .
           for D in *; do [ -d "$D" ] && zip -r archives/$D.zip "$D"; done
+          for D in wide/*; do [ -d "$D" ] && zip -r archives/wide-$(basename $D).zip "$D"; done
           rm archives/archives.zip
       - name: Create Indexes
         uses: Exponential-Workload/create-index-action@0.1.1
@@ -44,7 +46,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload entire repository
-          path: '.'
+          path: "."
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v2

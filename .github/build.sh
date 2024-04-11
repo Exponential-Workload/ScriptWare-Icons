@@ -1,22 +1,41 @@
 #!/bin/bash
 
-set -x;
+set -eax;
+
+if [ "$#" -ne "1" ]; then
+  echo "Usage: ./convert_vector.sh <path>";
+  exit;
+fi;
+
+__dirname=$(dirname "$(readlink -f "$0")");
 
 cd $1;
 if [ -f "vector.svg" ]; then
+  IMG_INFO="$($__dirname/aspect-ratio.sh vector.svg)"
+  echo "$IMG_INFO" > IMAGE_METADATA
+  echo -e "Image Metadata:\n$IMG_INFO"
+  eval $IMG_INFO
   toIco(){
-    convert $1x$1.png $1x$1.ico
+    convert "${size}.png" "${size}.ico"
     if [ $? -ne "0" ]; then
-      rm $1x$1.ico
+      rm "${size}.ico"
     fi;
   }
   toFormat() {
-    inkscape -w $1 -h $1 vector.svg --export-filename $1x$1.$2;
+    inkscape -w "$width" -h "$height" vector.svg --export-filename $size.$2;
   }
   run() {
+    width="$1";
+    echo $width \* $IMG_ASPECT_RATIO
+    # IMG_ASPECT_RATIO is returned by aspect-ratio.sh
+    height=$(echo "scale=0; $width / $IMG_ASPECT_RATIO" | bc)
+    size="${width}x${height}"
     toFormat $1 png;
-    gm convert $1x$1.png $1x$1.webp;
-    toIco $1;
+    gm convert $size.png $size.webp;
+    # if the width & height are both under or equal to 256
+    if (( $(echo "$height <= 256" | bc) && $(echo "$width <= 256" | bc) )); then
+      toIco $1;
+    fi;
   }
   
   # ^2
